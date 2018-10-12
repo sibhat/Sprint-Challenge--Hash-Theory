@@ -1,5 +1,5 @@
 def hashing(string, size):
-    ans = 1
+    # ans = 1
     if string:
         # for x in string:
         #     ans += ord(x) * 24
@@ -11,21 +11,38 @@ def reconstruct_trip(tickets):
     storage = {}
     ans = []
     for ticket in tickets:
-        new_arr = []
-        key = hashing(ticket[0], len(tickets) * 5)
-        if key in storage:
-            new_arr.append((ticket[0], ticket[1]))
-            storage[key] = new_arr
-            print("handle this situtaiton")
-        else:
-            storage[key] = ticket[1]
+        storage[ticket[0]] = ticket[1]
 
     starting_city = storage[None]
+    ans.append(starting_city)
+    try:
+        destination_city = storage[starting_city]
+    except KeyError:
+        print("error")
+        return []
+
+    while(destination_city):
+        ans.append(destination_city)
+        destination_city = storage[destination_city]
+    return ans
+
+
+def reconstruct_trip_Hashed(tickets):
+    hashed_storage = {}
+    ans = []
+    for ticket in tickets:
+        key = hashing(ticket[0], len(tickets) * 5)
+        if key in hashed_storage:
+            print("handle this situtaiton")
+        else:
+            hashed_storage[key] = ticket[1]
+
+    starting_city = hashed_storage[None]
     ans.append(starting_city)
 
     starting_city_code = hashing(starting_city, len(tickets) * 5)
     try:
-        destination_city = storage[starting_city_code]
+        destination_city = hashed_storage[starting_city_code]
     except KeyError:
         print("error")
         return []
@@ -33,11 +50,8 @@ def reconstruct_trip(tickets):
     while(destination_city):
         ans.append(destination_city)
         starting_city_code = hashing(destination_city, len(tickets) * 5)
-        # try:
-        destination_city = storage[starting_city_code]
-        # except KeyError:
-        #     print("error")
-        #     break
+
+        destination_city = hashed_storage[destination_city]
     return ans
 
 
